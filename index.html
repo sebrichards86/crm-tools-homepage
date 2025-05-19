@@ -29,6 +29,22 @@
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
     }
 
+    .gear {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-size: 1.8rem;
+      cursor: pointer;
+      color: #e6f0ff;
+      opacity: 0.7;
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .gear:hover {
+      opacity: 1;
+    }
+
     .container {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -97,6 +113,8 @@
 </head>
 <body>
   <header>James's Playground</header>
+  <a href="login.html" class="gear" title="Admin Login">⚙️</a>
+
   <div class="container" id="tilesContainer">
     <!-- Tiles will be injected here by JavaScript -->
   </div>
@@ -107,21 +125,18 @@
 
  <!-- Firebase scripts -->
 <script type="module">
-  // Import Firebase SDKs
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
   import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-  // Your Firebase config (replace with your actual values)
-const firebaseConfig = {
-  apiKey: "AIzaSyBKdpUQ9b6X6p5a9Mmuk_-_2T3q509I0oc",
-  authDomain: "james-playground-67b07.firebaseapp.com",
-  projectId: "james-playground-67b07",
-  storageBucket: "james-playground-67b07.firebasestorage.app",
-  messagingSenderId: "476918557234",
-  appId: "1:476918557234:web:b6e52ae92aa8277348ea2b"
-};
+  const firebaseConfig = {
+    apiKey: "AIzaSyBKdpUQ9b6X6p5a9Mmuk_-_2T3q509I0oc",
+    authDomain: "james-playground-67b07.firebaseapp.com",
+    projectId: "james-playground-67b07",
+    storageBucket: "james-playground-67b07.firebasestorage.app",
+    messagingSenderId: "476918557234",
+    appId: "1:476918557234:web:b6e52ae92aa8277348ea2b"
+  };
 
-  // Init Firebase
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
@@ -135,7 +150,6 @@ const firebaseConfig = {
       tiles.push(doc.data());
     });
 
-    // Sort alphabetically
     tiles.sort((a, b) => a.name.localeCompare(b.name));
 
     tiles.forEach(tile => {
