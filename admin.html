@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Add Tool – James's Playground</title>
+  <title>Admin – James's Playground</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
@@ -20,7 +20,7 @@
 
     form {
       max-width: 500px;
-      margin: 0 auto;
+      margin: 0 auto 2rem;
       background: #2f4967;
       padding: 2rem;
       border-radius: 10px;
@@ -87,10 +87,21 @@
       padding: 3px 7px;
       border-radius: 10px;
     }
+
+    .edit-button {
+      margin-top: 1rem;
+      background: #f57c00;
+    }
+
+    .cancel-button {
+      margin-top: 1rem;
+      background: #888;
+    }
   </style>
 </head>
 <body>
-  <h1>Add a Tool to James’s Playground</h1>
+  <h1>Manage Tools – James’s Playground</h1>
+
   <form id="toolForm">
     <label for="name">Tool Name</label>
     <input type="text" id="name" placeholder="e.g. DietPDF - PDF Compressor" required />
@@ -106,15 +117,22 @@
       Mark as NEW
     </label>
 
-    <button type="submit">Add Tool</button>
+    <button type="submit" id="submitButton">Add Tool</button>
+    <button type="button" id="cancelEdit" class="cancel-button" style="display: none;">Cancel Edit</button>
   </form>
 
   <div class="preview-container" id="previewContainer"></div>
 
-<!-- Firebase scripts -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      getDocs,
+      addDoc,
+      updateDoc,
+      doc
+    } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBKdpUQ9b6X6p5a9Mmuk_-_2T3q509I0oc",
@@ -125,53 +143,93 @@ const firebaseConfig = {
   appId: "1:476918557234:web:b6e52ae92aa8277348ea2b"
 };
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-  const preview = document.getElementById("previewContainer");
-  const form = document.getElementById("toolForm");
+    const form = document.getElementById("toolForm");
+    const nameInput = document.getElementById("name");
+    const urlInput = document.getElementById("url");
+    const iconInput = document.getElementById("icon");
+    const isNewInput = document.getElementById("isNew");
+    const submitButton = document.getElementById("submitButton");
+    const cancelButton = document.getElementById("cancelEdit");
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+    const preview = document.getElementById("previewContainer");
 
-    const name = document.getElementById("name").value.trim();
-    const url = document.getElementById("url").value.trim();
-    const icon = document.getElementById("icon").value.trim();
-    const isNew = document.getElementById("isNew").checked;
+    let editingDocId = null;
 
-    try {
-      // Add tool to Firestore
-      await addDoc(collection(db, "tiles"), {
-        name,
-        url,
-        icon,
-        isNew
+    async function loadTiles() {
+      preview.innerHTML = '';
+      const snapshot = await getDocs(collection(db, "tiles"));
+      snapshot.forEach(docSnap => {
+        const tile = docSnap.data();
+        const tileDiv = document.createElement("div");
+        tileDiv.className = "tile";
+        tileDiv.innerHTML = `
+          <img src="${tile.icon}" alt="${tile.name} Icon">
+          <div>${tile.name}</div>
+          ${tile.isNew ? '<div class="badge">NEW</div>' : ''}
+          <button class="edit-button" data-id="${docSnap.id}">Edit</button>
+        `;
+        preview.appendChild(tileDiv);
       });
 
-      // Show preview tile
-      const tile = document.createElement("div");
-      tile.className = "tile";
-      tile.innerHTML = `
-        <img src="${icon}" alt="${name} Icon">
-        <div>${name}</div>
-        ${isNew ? '<div class="badge">NEW</div>' : ''}
-      `;
-
-      const link = document.createElement("a");
-      link.href = url;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      link.appendChild(tile);
-
-      preview.appendChild(link);
-      form.reset();
-      alert("Tool added to Firestore!");
-    } catch (err) {
-      console.error("Error adding tool:", err);
-      alert("Error saving tool. Check console for details.");
+      // Add edit listeners
+      document.querySelectorAll(".edit-button").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          const docId = btn.getAttribute("data-id");
+          const docRef = doc(db, "tiles", docId);
+          const docSnap = await getDocs(collection(db, "tiles"));
+          docSnap.forEach(d => {
+            if (d.id === docId) {
+              const data = d.data();
+              nameInput.value = data.name;
+              urlInput.value = data.url;
+              iconInput.value = data.icon;
+              isNewInput.checked = data.isNew;
+              editingDocId = docId;
+              submitButton.textContent = "Save Changes";
+              cancelButton.style.display = "inline-block";
+            }
+          });
+        });
+      });
     }
-  });
-</script>
 
+    cancelButton.addEventListener("click", () => {
+      form.reset();
+      editingDocId = null;
+      submitButton.textContent = "Add Tool";
+      cancelButton.style.display = "none";
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const newTool = {
+        name: nameInput.value.trim(),
+        url: urlInput.value.trim(),
+        icon: iconInput.value.trim(),
+        isNew: isNewInput.checked
+      };
+
+      if (editingDocId) {
+        const docRef = doc(db, "tiles", editingDocId);
+        await updateDoc(docRef, newTool);
+        alert("Tool updated!");
+      } else {
+        await addDoc(collection(db, "tiles"), newTool);
+        alert("Tool added!");
+      }
+
+      form.reset();
+      editingDocId = null;
+      submitButton.textContent = "Add Tool";
+      cancelButton.style.display = "none";
+      loadTiles();
+    });
+
+    loadTiles();
+  </script>
 </body>
 </html>
