@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CRM Tools</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to bottom, #0d1b2a, #1b263b);
+      color: #e6f0ff;
+    }
+
+    header {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      text-align: center;
+      padding: 3rem 1rem 2rem;
+      color: #ffffff;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.7);
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem;
+      padding: 2rem 1rem 4rem;
+      width: 100%;
+    }
+
+    .tile {
+      background: radial-gradient(circle at top left, #1e2e40, #0d1a28);
+      border-radius: 20px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+      padding: 3rem 1rem;
+      text-align: center;
+      text-decoration: none;
+      color: #f0f8ff;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .tile:hover {
+      transform: scale(1.03);
+      background: radial-gradient(circle at bottom right, #20344a, #0f2235);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.7);
+    }
+
+    @media (hover: none) {
+      .tile:hover {
+        transform: none;
+        background: radial-gradient(circle at top left, #1e2e40, #0d1a28);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>CRM Tools</header>
+  <div class="container">
+    <a href="https://your-app1-url.com" class="tile">App 1</a>
+    <a href="https://your-app2-url.com" class="tile">App 2</a>
+    <a href="https://your-app3-url.com" class="tile">App 3</a>
+    <!-- Add more tiles as needed -->
+  </div>
+</body>
+</html>
