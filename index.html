@@ -105,28 +105,40 @@
     © 2025 James Richards | Built with ❤️ in Derbyshire
   </footer>
 
-  <script>
-    const tilesData = [
-      {
-        name: "DietPDF - PDF Compression Tool",
-        url: "https://dietpdf.onrender.com/",
-        icon: "dietpdf-icon.png",
-        isNew: true
-      },
-      {
-        name: "Coming Soon App",
-        url: "#",
-        icon: "comingsoon.png",
-        isNew: false
-      }
-    ];
+ <!-- Firebase scripts -->
+<script type="module">
+  // Import Firebase SDKs
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-    // Sort alphabetically by name
-    tilesData.sort((a, b) => a.name.localeCompare(b.name));
+  // Your Firebase config (replace with your actual values)
+const firebaseConfig = {
+  apiKey: "AIzaSyBKdpUQ9b6X6p5a9Mmuk_-_2T3q509I0oc",
+  authDomain: "james-playground-67b07.firebaseapp.com",
+  projectId: "james-playground-67b07",
+  storageBucket: "james-playground-67b07.firebasestorage.app",
+  messagingSenderId: "476918557234",
+  appId: "1:476918557234:web:b6e52ae92aa8277348ea2b"
+};
 
-    const container = document.getElementById("tilesContainer");
+  // Init Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-    tilesData.forEach(tile => {
+  const container = document.getElementById("tilesContainer");
+
+  async function loadTiles() {
+    const querySnapshot = await getDocs(collection(db, "tiles"));
+    const tiles = [];
+
+    querySnapshot.forEach(doc => {
+      tiles.push(doc.data());
+    });
+
+    // Sort alphabetically
+    tiles.sort((a, b) => a.name.localeCompare(b.name));
+
+    tiles.forEach(tile => {
       const tileEl = document.createElement("a");
       tileEl.className = "tile";
       tileEl.href = tile.url;
@@ -141,6 +153,9 @@
 
       container.appendChild(tileEl);
     });
-  </script>
+  }
+
+  loadTiles();
+</script>
 </body>
 </html>
