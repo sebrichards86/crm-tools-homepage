@@ -38,6 +38,7 @@
     }
 
     .tile {
+      position: relative;
       background: radial-gradient(circle at top left, #2f4967, #24394e);
       border-radius: 20px;
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
@@ -65,6 +66,18 @@
       filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
     }
 
+    .badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: #ff4d4f;
+      color: white;
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+
     footer {
       text-align: center;
       font-size: 0.9rem;
@@ -84,17 +97,50 @@
 </head>
 <body>
   <header>James's Playground</header>
-  <div class="container">
-    <a href="https://dietpdf.onrender.com/" class="tile" target="_blank" rel="noopener noreferrer">
-      <img src="dietpdf-icon.png" alt="DietPDF Icon">
-      <div>DietPDF - PDF Compression Tool</div>
-    </a>
-
-    <!-- Add more tiles as needed -->
+  <div class="container" id="tilesContainer">
+    <!-- Tiles will be injected here by JavaScript -->
   </div>
 
   <footer>
     © 2025 James Richards | Built with ❤️ in Derbyshire
   </footer>
+
+  <script>
+    const tilesData = [
+      {
+        name: "DietPDF - PDF Compression Tool",
+        url: "https://dietpdf.onrender.com/",
+        icon: "dietpdf-icon.png",
+        isNew: true
+      },
+      {
+        name: "Coming Soon App",
+        url: "#",
+        icon: "https://via.placeholder.com/144?text=App",
+        isNew: false
+      }
+    ];
+
+    // Sort alphabetically by name
+    tilesData.sort((a, b) => a.name.localeCompare(b.name));
+
+    const container = document.getElementById("tilesContainer");
+
+    tilesData.forEach(tile => {
+      const tileEl = document.createElement("a");
+      tileEl.className = "tile";
+      tileEl.href = tile.url;
+      tileEl.target = "_blank";
+      tileEl.rel = "noopener noreferrer";
+
+      tileEl.innerHTML = `
+        <img src="${tile.icon}" alt="${tile.name} icon">
+        <div>${tile.name}</div>
+        ${tile.isNew ? '<div class="badge">NEW</div>' : ''}
+      `;
+
+      container.appendChild(tileEl);
+    });
+  </script>
 </body>
 </html>
