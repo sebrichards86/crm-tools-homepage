@@ -55,6 +55,15 @@
       box-shadow: 0 12px 24px rgba(0, 0, 0, 0.7);
     }
 
+    .tile img {
+      display: block;
+      margin: 0 auto 1rem;
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
+    }
+
     @media (hover: none) {
       .tile:hover {
         transform: none;
@@ -67,8 +76,11 @@
 <body>
   <header>CRM Tools</header>
   <div class="container">
-    <a href="https://dietpdf.onrender.com/" class="tile" target="_blank" rel="noopener noreferrer">DietPDF - PDF Compression Tool</a>
-  
+    <a href="https://dietpdf.onrender.com/" class="tile" target="_blank" rel="noopener noreferrer">
+      <img src="dietpdf-icon.png" alt="DietPDF Icon">
+      <div>DietPDF - PDF Compression Tool</div>
+    </a>
+
     <!-- Add more tiles as needed -->
   </div>
 </body>
